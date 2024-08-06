@@ -1,5 +1,3 @@
-# final_project_ironhak
-
 # Ergonomic Posture Analysis and Recommendation System
 
 ## Project Overview
