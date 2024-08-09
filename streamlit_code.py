@@ -1,11 +1,9 @@
 import streamlit as st
-from PIL import Image
 import cv2
 import numpy as np
+from PIL import Image
 import mediapipe as mp
-import ergonomic_recommendations_streamlit
-import io
-import os
+import ergonomic_recommendations_streamlit  # Ensure this is correctly imported
 
 # Initialize MediaPipe Pose
 mp_pose = mp.solutions.pose
@@ -41,10 +39,26 @@ uploaded_file = st.file_uploader("Upload an image of yourself at your desk", typ
 if uploaded_file is not None:
     # Load the uploaded image
     image = Image.open(uploaded_file)
-    image = np.array(image)
+    image_np = np.array(image)
+
+    # Flip the image vertically to match coordinate system
+    image_np_flipped = np.flipud(image_np)
 
     # Process the image to find pose landmarks
-    results = pose.process(cv2.cvtColor(image, cv2.COLOR_BGR2RGB))
+    results = pose.process(cv2.cvtColor(image_np_flipped, cv2.COLOR_RGB2BGR))
+
+    # Draw pose landmarks on the image
+    if results.pose_landmarks:
+        # Convert to BGR format for OpenCV drawing
+        image_with_landmarks = cv2.cvtColor(image_np_flipped, cv2.COLOR_RGB2BGR)
+        mp_drawing.draw_landmarks(image_with_landmarks, results.pose_landmarks, mp_pose.POSE_CONNECTIONS)
+        
+        # Convert back to RGB format and flip vertically to display correctly
+        image_with_landmarks = cv2.cvtColor(image_with_landmarks, cv2.COLOR_BGR2RGB)
+        image_with_landmarks = np.flipud(image_with_landmarks)
+
+        # Display the image with landmarks
+        st.image(image_with_landmarks, caption='Image with Pose Landmarks', use_column_width=True)
 
     # Function to calculate the angle between three points
     def calculate_angle(a, b, c):
@@ -101,13 +115,23 @@ if uploaded_file is not None:
 
         # Determine which side is more visible based on confidence scores
         if landmarks[mp_pose.PoseLandmark.LEFT_HIP.value].visibility > landmarks[mp_pose.PoseLandmark.RIGHT_HIP.value].visibility:
+            st.subheader("Here are your results & recommendations:")
             hip_angle = left_hip_angle
             knee_angle = left_knee_angle
             elbow_angle = left_elbow_angle
+
+            st.write(f'The recommended Hip Angle is between 90 & 120 degrees. Your current angle is: {left_hip_angle:.2f} degrees')
+            st.write(f'The recommended Knee Angle is between 90 & 130 degrees. Your current angle is: {left_knee_angle:.2f} degrees')
+            st.write(f'The recommended Elbow Angle is between 90 & 120 degrees. Your current angle is: {left_elbow_angle:.2f} degrees')
         else:
+            st.subheader("Here are your results & recommendations:")
             hip_angle = right_hip_angle
             knee_angle = right_knee_angle
             elbow_angle = right_elbow_angle
+
+            st.write(f'The recommended Hip Angle is between 90 & 120 degrees. Your current angle is: {right_hip_angle:.2f} degrees')
+            st.write(f'The recommended Knee Angle is between 90 & 130 degrees. Your current angle is: {right_knee_angle:.2f} degrees')
+            st.write(f'The recommended Elbow Angle is between 90 & 120 degrees. Your current angle is: {right_elbow_angle:.2f} degrees')
 
         # Call the appropriate function based on the desk type
         if desk_adj == 'yes':
@@ -118,6 +142,3 @@ if uploaded_file is not None:
         # Display the recommendations
         for recommendation in result:
             st.write(recommendation)
-
-    # Display the uploaded image
-    st.image(image, caption='Uploaded Image', use_column_width=True)
