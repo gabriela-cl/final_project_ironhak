@@ -29,7 +29,7 @@ st.write("Keep your elbows close to your body and the wrists resting on the tabl
 st.write("Take a picture from the side, try to NOT take it from a diagonal angle.")
 
 # Display an example image
-example_image_path = 'Streamlit/sitting_recommendations.png'  # Path to your example image
+example_image_path = 'sitting_recommendations.png'  # Path to your example image
 example_image = Image.open(example_image_path)
 st.image(example_image, caption='Example: Correct Sitting Posture', use_column_width=True)
 
@@ -151,7 +151,7 @@ import numpy as np
 from streamlit_webrtc import webrtc_streamer, VideoTransformerBase
 
 # Load the saved model
-loaded_model = joblib.load('/Users/gabrielaclementedeoliveira/Documents/GitHub/final_project_ironhak/best_logistic_model.pkl')
+loaded_model = joblib.load('best_logistic_model.pkl')
 
 # Initialize MediaPipe for pose detection
 mp_pose = mp.solutions.pose
