@@ -15,3 +15,7 @@ This project aims to enhance workplace ergonomics through the use of computer vi
 - A machine learning model is trained to recognize poor neck posture in real-time using webcam input.
 - The system processes live images and detects if the user's neck posture deviates from the recommended ergonomic position.
 - The ultimate goal is to notify users when they are exhibiting bad neck posture, prompting them to correct it and thus reduce the risk of strain or injury.
+
+## Presentation
+
+For more details, you can view the presentation [here](https://docs.google.com/presentation/d/16osmNmdTiFUGViGWNnOfQk-dpX5A5B_X/edit?usp=sharing&ouid=111310972434121764252&rtpof=true&sd=true).
